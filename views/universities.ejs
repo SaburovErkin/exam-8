@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<style>
+    .container {
+        max-width: 1240px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .main_heading {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 35px;
+        line-height: 52px;
+        color: #000000;
+        text-align: center;
+    }
+
+    .main_wraper {
+        display: flex;
+        align-items: center;
+        gap: 458px;
+        margin-bottom: 100px;
+    }
+
+    .main_num {
+        background: #FFFFFF;
+        border: 1px solid #AEAEAE;
+        border-radius: 50%;
+        padding: 6px 20px;
+    }
+
+    .main_number {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 35px;
+        line-height: 52px;
+        color: #000000;
+    }
+
+    .main_form {
+        display: flex;
+        flex-direction: column;
+        width: 540px;
+    }
+
+    .main_select {
+        background: #FFFFFF;
+        border: 1px solid #AEAEAE;
+        border-radius: 20px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        padding-left: 24px;
+        margin-bottom: 50px;
+    }
+
+    .form_btn {
+        background: #FFFFFF;
+        border: 1px solid #18A0FB;
+        border-radius: 20px;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 27px;
+        color: #000000;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    form > label {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 36px;
+        margin-bottom: 16px;
+        color: #000000;
+    }
+    .main_wrapper2 {
+        display: flex;
+        gap: 450px;
+    }
+    
+    .main_fakultet {
+        background: #FFFFFF;
+        border: 1px solid #18A0FB;
+        box-shadow: 0px 0px 6px rgba(24, 160, 251, 0.5);
+        border-radius: 20px;
+        padding: 25px;
+        display: flex;
+        flex-wrap: wrap;
+        width: 540px;
+        /* flex-direction: column; */
+        gap: 15px;
+    }
+    .main_fakultet_item {
+        background: hsla(0, 0%, 73%, 0.3);
+        border-radius: 20px;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 30px;
+        padding: 7px 14px;
+        color: black;
+    }
+</style>
+<body>
+    <section class="main">
+        <div class="container">
+            <div class="main_container">
+                <h1 class="main_heading">Blok testlarga hush kelibsiz</h1>
+                <div class="main_wraper">
+                    <div class="main_num">
+                        <span class="main_number">1</span>
+                    </div>
+                    <div class="main_num">
+                        <span class="main_number">2</span>
+                    </div>
+                    <div class="main_num">
+                        <span class="main_number">3</span>
+                    </div>
+                </div>
+                
+                <div class="main_wrapper2">
+                    <form class="main_form" action="">
+                        <label for="select">
+                            Yo'nalish tanlash
+                        </label>
+                        <select class="main_select" name="" id="select" required>
+                            <option class="main_option" value="1" disabled>Universitet tanlang</option>
+                        </select>
+                        
+                        <button class="form_btn">Kirtish</button>
+                    </form>
+                    
+                    <div class="main_fakultet">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+<script>
+    const form = document.querySelector('.main_form')
+    const select = document.querySelector('.main_select')
+    const fakultet = document.querySelector('.main_fakultet')
+    
+    let data = localStorage.getItem('time_data')
+    localStorage.removeItem('time_data')
+    data = JSON.parse(data)
+    for (const item of data.data) {
+        option = document.createElement('option');
+        option.textContent = item.university_name;
+        option.value = item.university_id;
+        option.classList.add('main_option');
+        select.appendChild(option);
+    }
+    
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        var raw = JSON.stringify({
+            "universityId": select.value
+        });
+        
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        
+        fetch("http://localhost:3000/university", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const data = JSON.parse(result)
+            for (const item of data.data) {
+                const div =  document.createElement('div')
+                div.textContent = item.fakultet_name;
+                div.classList.add('main_fakultet_item')
+                fakultet.appendChild(div)
+            }
+            
+            window.location.href = '/testing'
+        })
+        .catch(error => console.log('error', error));
+    })
+</script>
+</html>

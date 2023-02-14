@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<style>
+    .container {
+        max-width: 1240px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+    .test_help {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 40px;
+        color: #000000;
+    }
+
+    .test_question {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 40px;
+        color: #000000;
+    }
+
+    .test_wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+    }
+
+    .test_hr {
+        margin-top: 50px;
+        border: 1px solid #AAAAAA;
+    }
+
+</style>
+<body>
+    <section class="test">
+        <div class="container">
+            <div class="test_container">
+                <form action="" class="test_form">
+                    <label for="">
+                        <p class="test_help">#1 Choose the answer which correctly completes the sentence.</p>
+                        <p class="test_question">When I got home I found an envelope on the table. In it was a … card from Aunt Alice for passing my French exam.</p>
+                        <div class="test_wrapper">
+                            <div class=""><input type="radio" value="congratulation's" name="1" id="correct1">congratulation's</div>
+                            <div class=""><input type="radio" value="congratulations" name="1">congratulations</div>
+                            <div class=""><input type="radio" value="congratulation" name="1" id="">congratulation</div>
+                            <div class=""><input type="radio" value="congratulation'" name="1" id="">congratulation'</div>
+                        </div>
+                        
+                        <hr class="test_hr">
+                    </label>
+                    <button>submit</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    
+    <template id="test_template">
+        <label for="">
+            <p class="test_help">#<span class="test_span">1</span> Choose the answer which correctly completes the sentence.</p>
+            <p class="test_question">When I got home I found an envelope on the table. In it was a … card from Aunt Alice for passing my French exam.</p>
+            <div class="test_wrapper">
+                <div class="test_wrapper1"><input class="test_radio1" type="radio" value="congratulation's" name="1" id="correct1">congratulation's</div>
+                <div class="test_wrapper2"><input class="test_radio2" type="radio" value="congratulations" name="1">congratulations</div>
+                <div class="test_wrapper3"><input class="test_radio3" type="radio" value="congratulation" name="1" id="">congratulation</div>
+                <div class="test_wrapper4"><input class="test_radio3" type="radio" value="congratulation'" name="1" id="">congratulation'</div>
+            </div>
+            
+            <hr class="test_hr">
+        </label>
+    </template>
+</body>
+
+<script>
+    var score = 0;
+    const form =  document.querySelector('.test_form');
+    const wrapper =  document.querySelector('.test_wrapper');
+    const template =  document.querySelector('#test_template').content;
+    const subjectId = localStorage.getItem('subject_id')
+    
+    
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    var raw = JSON.stringify({
+        "subjectId": JSON.parse(subjectId)
+    });
+    
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+    
+    fetch("http://localhost:5000/tests", requestOptions)
+    .then(response => response.text())
+    .then(result => {
+        const data = JSON.parse(result)
+
+        wrapper.innerHTML = null
+
+        let templateFragment = document.createDocumentFragment();
+        for (const item of data.data) {
+            let templateItem = template.cloneNode(true)
+            templateItem.querySelector('.test_span').textContent = item.question_id;
+            templateItem.querySelector('.test_question').textContent = item.question;
+            templateItem.querySelector('.test_wrapper1').innerHTML = `<input class="test_radio1" type="radio" value="congratulation's" name="${item.question_id}" id="correct1">${item.question_variants.A}`;
+            templateItem.querySelector('.test_wrapper2').innerHTML = `<input class="test_radio1" type="radio" value="congratulation's" name="${item.question_id}" id="correct1">${item.question_variants.B}`;
+            templateItem.querySelector('.test_wrapper3').innerHTML = `<input class="test_radio1" type="radio" value="congratulation's" name="${item.question_id}" id="correct1">${item.question_variants.C}`;
+            templateItem.querySelector('.test_wrapper4').innerHTML = `<input class="test_radio1" type="radio" value="congratulation's" name="${item.question_id}" id="correct1">${item.question_variants.D}`;
+            
+            templateFragment.appendChild(templateItem)
+        }
+        
+        wrapper.appendChild(templateFragment)
+    })
+    .catch(error => console.log('error', error));
+    form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        
+        function getRandomNumber(){
+            return Math.floor(Math.random() * (86 - 24 + 1) + 24);
+        }
+        console.log(getRandomNumber());
+    })
+</script>
+</html>

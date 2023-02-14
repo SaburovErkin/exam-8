@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<style>
+    p, h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+        padding: 0;
+    }
+    .login {
+        background: #FFFFFF;
+        box-shadow: 0px 2px 25px rgba(187, 187, 187, 0.35);
+        border-radius: 20px;
+        margin-left: 35%;
+        margin-right: 30%;
+    }
+    .container {
+        max-width: 1240px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .login_form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 25px;
+    }
+    .login_heading {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 35px;
+        line-height: 52px;
+        color: #000000;
+    }
+    .login_btn {
+        background: #FFFFFF;
+        border: 1px solid #18A0FB;
+        border-radius: 20px;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 27px;
+        padding: 10px 50px 10px 50px;
+        width: 360px;
+        color: #000000;
+    }
+    .login_link {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        color: #000000;
+    }
+    .login_input{
+        border: none;
+        outline: none;
+        padding: 10px;
+        border-bottom: 1px solid #BBBBBB;
+        width: 350px;
+    }
+    .login_wrapper {
+        display: flex;
+    }
+</style>
+<body>
+    <section class="login">
+        <div class="container">
+            <div class="login_container">
+                <form action="" class="login_form">
+                    <h1 class="login_heading">Kirish</h1>
+                    <label for="">
+                        <input type="text" class="login_input username_inout" placeholder="Username" required>
+                    </label>
+                    <label for="">
+                        <input type="password" class="login_input password_inout" placeholder="Password" required>
+                    </label>
+                    
+                    <button class="login_btn">Ro'yhatdan o'tish</button>
+                    <h3 class="login_link">Hisobingiz yo'qmi? <a href="/login">Kirish</a></h3>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+
+<script>
+    const form = document.querySelector('.login_form');
+    const username = document.querySelector('.username_inout');
+    const password = document.querySelector('.password_inout');
+    
+    
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        var raw = JSON.stringify({
+            "username": username.value,
+            "password": password.value
+        });
+        
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        
+        fetch("http://localhost:5000/login", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const data = JSON.parse(result)
+            if (data.token != undefined && data.token != null) {
+                localStorage.setItem('token', data.token)
+                window.location.href = '/'
+            }
+        })
+        .catch(error => console.log('error', error));
+    })
+    
+</script>
+</html>

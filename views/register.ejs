@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<style>
+    p, h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+        padding: 0;
+    }
+    .register {
+        background: #FFFFFF;
+        box-shadow: 0px 2px 25px rgba(187, 187, 187, 0.35);
+        border-radius: 20px;
+        margin-left: 35%;
+        margin-right: 30%;
+    }
+    .container {
+        max-width: 1240px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .register_form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 25px;
+    }
+    .register_heading {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 35px;
+        line-height: 52px;
+        color: #000000;
+    }
+    .register_btn {
+        background: #FFFFFF;
+        border: 1px solid #18A0FB;
+        border-radius: 20px;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 27px;
+        padding: 10px 50px 10px 50px;
+        width: 360px;
+        color: #000000;
+    }
+    .register_link {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        color: #000000;
+    }
+    .register_input{
+        border: none;
+        outline: none;
+        padding: 10px;
+        border-bottom: 1px solid #BBBBBB;
+        width: 350px;
+    }
+    .register_wrapper {
+        display: flex;
+    }
+</style>
+<body>
+    <section class="register">
+        <div class="container">
+            <div class="register_container">
+                <form action="" class="register_form">
+                    <h1 class="register_heading">Royhatdan otish</h1>
+                    
+                    <label for="">
+                        <input type="text" class="register_input register_input-fullName" placeholder="Full name" required>
+                    </label>
+                    <label for="">
+                        <input type="email" class="register_input register_input-email" placeholder="Phone number" required>
+                    </label>
+                    <label for="">
+                        <input type="text" class="register_input username_input" placeholder="Username" required>
+                    </label>
+                    <label for="">
+                        <input type="password" class="register_input register_input-password" placeholder="Password" required>
+                    </label>
+                    <div class="register_wrapper">
+                        <input id="radio1" name="radio" type="radio" class="register_input-radio" value="Erkak">
+                        <label for="radio1">Erkak</label>
+                        <input id="radio2" name="radio" type="radio" class="register_input-radio" value="Ayol">
+                        <label for="radio2">Ayol</label>
+                    </div>
+                    
+                    <button class="register_btn">Royhatdan otish</button>
+                    <h3 class="register_link">Hisobingiz bormi? <a href="/login">Kirish</a></h3>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+
+<script>
+    const form = document.querySelector('.register_form');
+    const fullName = document.querySelector('.register_input-fullName');
+    const email = document.querySelector('.register_input-email');
+    const username = document.querySelector('.username_input');
+    const password = document.querySelector('.password_input');
+    const radio1 = document.querySelector('#radio1');
+    const radio2 = document.querySelector('#radio2');
+    let gender;
+    
+    
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (radio1.checked == true) {
+            gender = radio1.value
+        } else if(radio2.checked == true) {
+            gender = radio2.value
+        }
+        console.log(gender);
+        
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        var raw = JSON.stringify({
+            "username": userName.value,
+            "password": password.value,
+            "full_name": fullName.value,
+            "phoneNumber": phoneNumber.value,
+            "gender": gender
+        });
+        
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        
+        fetch("http://localhost:3000/register", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const data = JSON.parse(result)
+            if (data.token != undefined && data.token != null) {
+                localStorage.setItem('token', data.token)
+                window.location.href = '/'
+            }
+        })
+        .catch(error => console.log('error', error));
+    })
+    
+</script>
+</html>
